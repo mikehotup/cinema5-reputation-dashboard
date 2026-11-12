@@ -1,0 +1,98 @@
+.ai-mascot-peek {
+  --mascot-light: var(--primary);
+  position: absolute;
+  right: 14px;
+  bottom: 100%;
+  width: 62px;
+  height: 42px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ai-mascot-head {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 46px;
+  height: 46px;
+  color: var(--card-foreground);
+  transform-origin: 50% 75%;
+  transform: translateY(5px) rotate(7deg);
+  animation: ai-mascot-peeking 7s ease-in-out infinite;
+}
+
+.ai-mascot-antenna {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 17px;
+  height: 16px;
+  background: var(--mascot-light);
+  clip-path: polygon(5px 0, 16px 0, 16px 4px, 8px 4px, 8px 8px, 14px 8px, 14px 16px, 10px 16px, 10px 12px, 5px 12px);
+  transform-origin: 70% 100%;
+  animation: ai-mascot-signal 7s ease-in-out infinite;
+}
+
+.ai-mascot-shell {
+  position: absolute;
+  inset: 14px 0 0;
+  background: currentColor;
+  clip-path: polygon(7px 0, 36px 0, 36px 4px, 42px 4px, 42px 9px, 100% 9px, 100% 100%, 0 100%, 0 8px, 7px 8px);
+}
+
+.ai-mascot-visor {
+  position: absolute;
+  inset: 21px 5px 3px;
+  background: var(--background);
+  clip-path: polygon(4px 0, 28px 0, 28px 3px, 100% 3px, 100% 100%, 0 100%, 0 4px, 4px 4px);
+}
+
+.ai-mascot-gaze {
+  position: absolute;
+  top: 5px;
+  left: 9px;
+  animation: ai-mascot-glance 7s ease-in-out infinite;
+}
+
+.ai-mascot-eyes {
+  display: block;
+  width: 5px;
+  height: 6px;
+  background: currentColor;
+  box-shadow: 13px 0 var(--mascot-light);
+  animation: ai-mascot-blink 7s linear infinite;
+}
+
+@keyframes ai-mascot-peeking {
+  0%, 12% { transform: translateY(12px) rotate(0) scaleY(.93); }
+  22% { transform: translateY(0) rotate(10deg); }
+  34% { transform: translateY(3px) rotate(6deg); }
+  52%, 70% { transform: translateY(1px) rotate(9deg); }
+  82%, 100% { transform: translateY(12px) rotate(0) scaleY(.93); }
+}
+
+@keyframes ai-mascot-signal {
+  0%, 15%, 38%, 100% { rotate: 0deg; }
+  23% { rotate: -12deg; }
+  29% { rotate: 5deg; }
+}
+
+@keyframes ai-mascot-glance {
+  0%, 22%, 59%, 100% { translate: 0; }
+  33% { translate: -3px -1px; }
+  45% { translate: 4px 0; }
+}
+
+@keyframes ai-mascot-blink {
+  0%, 59%, 63%, 66%, 71%, 100% { scale: 1; }
+  61%, 68% { scale: 1 .15; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-mascot-head,
+  .ai-mascot-antenna,
+  .ai-mascot-gaze,
+  .ai-mascot-eyes {
+    animation: none;
+  }
+}

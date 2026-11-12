@@ -24,7 +24,7 @@ export default function RootLayout({
     <html
       lang="ru"
       suppressHydrationWarning
-      className={jetbrains.variable}
+      className={`${jetbrains.variable} [scrollbar-gutter:stable]`}
     >
       <body className={`${jetbrains.className} antialiased`}>
         <ThemeProvider
