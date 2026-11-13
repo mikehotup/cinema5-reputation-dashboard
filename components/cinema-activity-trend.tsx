@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { ActivityUnitToggle, type ActivityUnit } from "@/components/cinema-activity-chart";
 import { ChartDateAxis, measureChartScrollbar } from "@/components/chart-date-axis";
 import { ActivityPeriodNote, ChartHeading } from "@/components/chart-heading";
 import { ChartTooltip, useChartTooltip } from "@/components/chart-tooltip";
-import { activityScale, difference, groupByThirtyDays } from "@/lib/activity-intervals";
+import { activityScale, difference, groupByThirtyDays, type ActivityInterval } from "@/lib/activity-intervals";
 type Snapshot = {
   date: string;
   ratings: number | null;
@@ -20,17 +20,17 @@ const series = [
 const markerSize = "size-3.5";
 const sharedMarker = "bg-linear-to-r from-emerald-700 from-50% to-amber-700 to-50% dark:from-emerald-300 dark:to-amber-300";
 
-export function CinemaActivityTrend({
-  snapshots,
-  fullRange,
-}: {
-  snapshots: Snapshot[];
+type TrendProps = {
   fullRange: boolean;
-}) {
+} & ({ snapshots: Snapshot[] } | { networkIntervals: ActivityInterval[] });
+
+export function CinemaActivityTrend(props: TrendProps) {
+  const { fullRange } = props;
+  const headingId = useId();
   const [unit, setUnit] = useState<ActivityUnit>("interval");
   const { tooltip, hideTooltip, markerEvents } = useChartTooltip();
-  const source = snapshots.slice(1).map((last, index) => {
-    const first = snapshots[index];
+  const source = "networkIntervals" in props ? props.networkIntervals : props.snapshots.slice(1).map((last, index) => {
+    const first = props.snapshots[index];
     return {
       from: first.date,
       to: last.date,
@@ -66,10 +66,10 @@ export function CinemaActivityTrend({
   const activePoint = tooltip && points[tooltip.index];
 
   return (
-    <section aria-labelledby="cinema-trend-title" className="mt-4 rounded-xl border border-border bg-card p-4 text-card-foreground sm:p-5">
+    <section aria-labelledby={headingId} className="mt-4 rounded-xl border border-border bg-card p-4 text-card-foreground sm:p-5">
       <ChartHeading
-        id="cinema-trend-title"
-        title="Динамика оценок и отзывов"
+        id={headingId}
+        title={"networkIntervals" in props ? "Общая динамика" : "Динамика оценок и отзывов"}
         note={note}
         controls={fullRange && <ActivityUnitToggle unit={unit} onUnitChange={(next) => {
           hideTooltip();

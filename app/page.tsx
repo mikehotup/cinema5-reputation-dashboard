@@ -111,6 +111,18 @@ function periodChange(values: string[], start: number, end: number) {
   return difference(snapshotNumber(values[start]), snapshotNumber(values[end]));
 }
 
+function networkPeriodChange(cinemas: Cinema[], key: "totalRatings" | "reviews", start: number, end: number) {
+  if (cinemas.length === 0) return null;
+
+  let total = 0;
+  for (const cinema of cinemas) {
+    const change = periodChange(cinema[key], start, end);
+    if (change === null) return null;
+    total += change;
+  }
+  return total;
+}
+
 const ratingPoints = (tenths: number | null) => tenths === null ? null : tenths / 10;
 const format = (value: number) => value.toLocaleString("ru-RU");
 const summaryCardClassName = "min-h-28 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-5";
@@ -319,8 +331,13 @@ export default function Home() {
 
   if (!data || end < 0) {
     return (
-      <main className="min-h-screen bg-background p-8 text-foreground">
-        Загрузка...
+      <main className="grid min-h-dvh place-items-center bg-background p-8 text-foreground">
+        <div role="status" className="flex flex-col items-center gap-2">
+          <AiMascot loading />
+          <p className="text-center">
+            <ScrambledCount value="Загрузка..." includeLetters />
+          </p>
+        </div>
       </main>
     );
   }
@@ -347,6 +364,15 @@ export default function Home() {
       reviews: snapshotNumber(cinema.reviews[snapshotIndex]),
     };
   });
+  const networkIntervals = viewMode === "network" ? data.dates.slice(start + 1, end + 1).map((to, offset) => {
+    const fromIndex = start + offset;
+    return {
+      from: data.dates[fromIndex],
+      to,
+      change: networkPeriodChange(data.rows, "totalRatings", fromIndex, fromIndex + 1),
+      comparisonChange: networkPeriodChange(data.rows, "reviews", fromIndex, fromIndex + 1),
+    };
+  }) : null;
   const summaryRatings =
     viewMode === "network" ? periodRatings : (selectedCinemaRow?.ratingsGrowth ?? 0);
   const summaryReviews =
@@ -631,8 +657,10 @@ export default function Home() {
           </>
         )}
 
+        {networkIntervals && <CinemaActivityTrend networkIntervals={networkIntervals} fullRange={fullRange} />}
+
         {viewMode === "network" && (
-          <div className="mt-8 overflow-x-auto rounded-xl border border-border bg-card">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-border bg-card">
             <table className="w-full min-w-[800px] table-auto text-left text-sm">
             <thead className="bg-secondary text-muted-foreground">
               <tr>

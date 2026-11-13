@@ -4,7 +4,7 @@ const symbols = "#+?/%&";
 const stepDuration = 120;
 const duration = 13 * stepDuration;
 
-export function ScrambledCount({ value }: { value: string }) {
+export function ScrambledCount({ value, includeLetters = false }: { value: string; includeLetters?: boolean }) {
   const displayRef = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
@@ -12,8 +12,9 @@ export function ScrambledCount({ value }: { value: string }) {
     if (!display) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const digits = value.match(/[0-9]/g)?.length ?? 0;
-    if (reducedMotion.matches || digits === 0) {
+    const pattern = includeLetters ? /[\p{L}0-9]/gu : /[0-9]/g;
+    const characterCount = value.match(pattern)?.length ?? 0;
+    if (reducedMotion.matches || characterCount === 0) {
       display.textContent = value;
       return;
     }
@@ -32,11 +33,11 @@ export function ScrambledCount({ value }: { value: string }) {
       const step = Math.floor(elapsed / stepDuration);
       if (step !== previousStep) {
         previousStep = step;
-        let digitIndex = 0;
-        display.textContent = value.replace(/[0-9]/g, (digit) => {
-          const index = digitIndex++;
-          const revealStep = 6 + Math.round((6 * index) / Math.max(1, digits - 1));
-          return step >= revealStep ? digit : symbols[(step + index * 5) % symbols.length];
+        let characterIndex = 0;
+        display.textContent = value.replace(pattern, (character) => {
+          const index = characterIndex++;
+          const revealStep = 6 + Math.round((6 * index) / Math.max(1, characterCount - 1));
+          return step >= revealStep ? character : symbols[(step + index * 5) % symbols.length];
         });
       }
       frame = requestAnimationFrame(render);
@@ -44,7 +45,7 @@ export function ScrambledCount({ value }: { value: string }) {
 
     render(start);
     return () => cancelAnimationFrame(frame);
-  }, [value]);
+  }, [value, includeLetters]);
 
   return (
     <>

@@ -1,8 +1,8 @@
 import "./ai-mascot.css";
 
-export function AiMascot() {
+export function AiMascot({ loading = false }: { loading?: boolean }) {
   return (
-    <div className="ai-mascot-peek" aria-hidden="true">
+    <div className={loading ? "ai-mascot-peek ai-mascot-loading" : "ai-mascot-peek"} aria-hidden="true">
       <div className="ai-mascot-head">
         <span className="ai-mascot-antenna" />
         <span className="ai-mascot-shell" />

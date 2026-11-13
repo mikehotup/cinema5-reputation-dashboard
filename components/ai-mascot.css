@@ -37,14 +37,22 @@
   position: absolute;
   inset: 14px 0 0;
   background: currentColor;
-  clip-path: polygon(7px 0, 36px 0, 36px 4px, 42px 4px, 42px 9px, 100% 9px, 100% 100%, 0 100%, 0 8px, 7px 8px);
+  clip-path: polygon(
+    7px 0, 36px 0, 36px 4px, 42px 4px, 42px 9px, 100% 9px,
+    100% 28px, 37px 28px, 37px 100%, 8px 100%, 8px 28px, 0 28px,
+    0 8px, 7px 8px
+  );
 }
 
 .ai-mascot-visor {
   position: absolute;
   inset: 21px 5px 3px;
   background: var(--background);
-  clip-path: polygon(4px 0, 28px 0, 28px 3px, 100% 3px, 100% 100%, 0 100%, 0 4px, 4px 4px);
+  clip-path: polygon(
+    4px 0, 28px 0, 28px 3px, 100% 3px, 100% 17px,
+    28px 17px, 28px 100%, 7px 100%, 7px 17px, 0 17px,
+    0 4px, 4px 4px
+  );
 }
 
 .ai-mascot-gaze {
@@ -88,8 +96,27 @@
   61%, 68% { scale: 1 .15; }
 }
 
+.ai-mascot-loading {
+  position: relative;
+  inset: auto;
+  height: 64px;
+  overflow: visible;
+}
+
+.ai-mascot-loading .ai-mascot-head {
+  transform: rotate(-5deg);
+  animation-name: ai-mascot-sway;
+  animation-duration: 2.8s;
+}
+
+@keyframes ai-mascot-sway {
+  0%, 100% { transform: translateY(2px) rotate(-5deg); }
+  50% { transform: translateY(-3px) rotate(5deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ai-mascot-head,
+  .ai-mascot-loading .ai-mascot-head,
   .ai-mascot-antenna,
   .ai-mascot-gaze,
   .ai-mascot-eyes {
